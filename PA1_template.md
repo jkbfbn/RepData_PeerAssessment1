@@ -178,25 +178,10 @@ report the mean and median total number of steps taken per day.
 ```r
 stepsPerDay <- aggregate(steps ~ date,activityData,sum)
 stepsPerDayCC <- aggregate(steps ~ date,activityDataCC,sum)
-hist(stepsPerDayCC$steps,breaks=50)
+hist(stepsPerDay$steps,breaks=50,main="Steps per day, NAs included")
 ```
 
 ![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
-
-```r
-summary(stepsPerDayCC$steps)
-```
-
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##      41    9819   10770   10770   12810   21190
-```
-
-```r
-hist(stepsPerDay$steps,breaks=50)
-```
-
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-2.png) 
 
 ```r
 summary(stepsPerDay$steps)
@@ -205,6 +190,21 @@ summary(stepsPerDay$steps)
 ```
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##      41    8841   10760   10770   13290   21190
+```
+
+```r
+hist(stepsPerDayCC$steps,breaks=50,main="Steps per day, NAs replaced by mean per interval")
+```
+
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-2.png) 
+
+```r
+summary(stepsPerDayCC$steps)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    9819   10770   10770   12810   21190
 ```
 
 Do these values differ from the estimates from the first part of the assignment? 

@@ -77,10 +77,10 @@ report the mean and median total number of steps taken per day.
 ```{r}
 stepsPerDay <- aggregate(steps ~ date,activityData,sum)
 stepsPerDayCC <- aggregate(steps ~ date,activityDataCC,sum)
-hist(stepsPerDayCC$steps,breaks=50)
-summary(stepsPerDayCC$steps)
-hist(stepsPerDay$steps,breaks=50)
+hist(stepsPerDay$steps,breaks=50,main="Steps per day, NAs included")
 summary(stepsPerDay$steps)
+hist(stepsPerDayCC$steps,breaks=50,main="Steps per day, NAs replaced by mean per interval")
+summary(stepsPerDayCC$steps)
 ```
 
 Do these values differ from the estimates from the first part of the assignment? 
