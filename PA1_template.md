@@ -90,6 +90,14 @@ meanTotalPerDay
 ## 53 2012-11-29 24.4687500
 ```
 
+```r
+mean(meanTotalPerDay$steps)
+```
+
+```
+## [1] 37.3826
+```
+
 
 ## What is the average daily activity pattern?
 Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and 
@@ -133,9 +141,10 @@ sum(!complete.cases(activityData))
 Devise a strategy for filling in all of the missing values in the dataset. 
 The strategy does not need to be sophisticated. For example, you could use 
 the mean/median for that day, or the mean for that 5-minute interval, etc.
-
 Create a new dataset that is equal to the original dataset but with the missing 
-data filled in. Strategy: replace NAs by mean of steps per interval
+data filled in. 
+
+My strategy: replace NAs by mean of steps per interval
 
 
 ```r
@@ -163,25 +172,16 @@ head(activityDataCC)
 ```
 
 Make a histogram of the total number of steps taken each day and Calculate and 
-report the mean and median total number of steps taken per day. Do these values 
-differ from the estimates from the first part of the assignment? What is the 
-impact of imputing missing data on the estimates of the total daily number of steps?
+report the mean and median total number of steps taken per day. 
 
 
 ```r
+stepsPerDay <- aggregate(steps ~ date,activityData,sum)
 stepsPerDayCC <- aggregate(steps ~ date,activityDataCC,sum)
 hist(stepsPerDayCC$steps,breaks=50)
 ```
 
 ![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
-
-```r
-hist(stepsPerDay$steps,breaks=50)
-```
-
-```
-## Error in hist(stepsPerDay$steps, breaks = 50): Objekt 'stepsPerDay' nicht gefunden
-```
 
 ```r
 summary(stepsPerDayCC$steps)
@@ -192,11 +192,29 @@ summary(stepsPerDayCC$steps)
 ##      41    9819   10770   10770   12810   21190
 ```
 
-The quartile range is broader
+```r
+hist(stepsPerDay$steps,breaks=50)
+```
+
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-2.png) 
+
+```r
+summary(stepsPerDay$steps)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    8841   10760   10770   13290   21190
+```
+
+Do these values differ from the estimates from the first part of the assignment? 
+What is the impact of imputing missing data on the estimates of the total daily number of steps?
+Yes, slightly. With replacing the NAs the quartile range is narrowed.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 Create a new factor variable in the dataset with two levels -- "weekday" and 
 "weekend" indicating whether a given date is a weekday or weekend day.
+
 
 ```r
 weekdaysOfDates <- weekdays(as.Date(activityDataCC$date))
@@ -205,9 +223,41 @@ partOfWeek <- function(days) {
         days[days != "weekend"] <- "weekday"
         days
 }
-activityDataCC$partOfWeek <- as.factor(partOfWeek(weekdaysOfDates)) 
+activityDataCC$partOfWeek <- as.factor(partOfWeek(weekdaysOfDates))
+head(activityDataCC)
+```
+
+```
+##       steps       date interval partOfWeek
+## 1 1.7169811 2012-10-01        0    weekday
+## 2 0.3396226 2012-10-01        5    weekday
+## 3 0.1320755 2012-10-01       10    weekday
+## 4 0.1509434 2012-10-01       15    weekday
+## 5 0.0754717 2012-10-01       20    weekday
+## 6 2.0943396 2012-10-01       25    weekday
+```
+
+```r
+str(activityDataCC)
+```
+
+```
+## 'data.frame':	17568 obs. of  4 variables:
+##  $ steps     : num  1.717 0.3396 0.1321 0.1509 0.0755 ...
+##  $ date      : Factor w/ 61 levels "2012-10-01","2012-10-02",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ interval  : int  0 5 10 15 20 25 30 35 40 45 ...
+##  $ partOfWeek: Factor w/ 2 levels "weekday","weekend": 1 1 1 1 1 1 1 1 1 1 ...
 ```
 
 Make a panel plot containing a time series plot (i.e. type = "l") of the 
 5-minute interval (x-axis) and the average number of steps taken, averaged 
 across all weekday days or weekend days (y-axis).
+
+
+```r
+stepsPerIntervalCC <- aggregate(steps ~ interval + partOfWeek,activityDataCC,mean)
+library("ggplot2")
+ggplot(stepsPerIntervalCC,aes(x=interval,y=steps)) + geom_line() + facet_grid(partOfWeek~.)
+```
+
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
